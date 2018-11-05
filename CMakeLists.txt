@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
 project(Network_simulation)
 
+include_directories (include)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Debug" CACHE STRING "" FORCE)
 endif(NOT CMAKE_BUILD_TYPE)
@@ -10,19 +12,19 @@ SET(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -O3")
 option(test "Build tests." ON)
 
 include_directories("/usr/local/include" ${CMAKE_SOURCE_DIR}/include)
-link_directories(${CMAKE_SOURCE_DIR}/lib)
 
-add_executable(NetSim src/main.cpp)
+add_executable(NetSim src/main.cpp src/simulation.cpp src/simulation.h src/random.h src/random.cpp src/network.h src/network.cpp)
 
 if (test)
   enable_testing()
   find_package(GTest)
   if (NOT GTEST_FOUND)
+	link_directories(${CMAKE_SOURCE_DIR}/lib)
     SET(GTEST_INCLUDE_DIRS ${CMAKE_SOURCE_DIR}/include)
     SET(GTEST_BOTH_LIBRARIES libgtest.a libgtest_main.a)
   endif(NOT GTEST_FOUND)
   include_directories(${GTEST_INCLUDE_DIRS})
-  add_executable(testNetSim src/test_main.cpp)
+  add_executable(testNetSim src/test_main.cpp src/simulation.cpp src/simulation.h src/random.h src/random.cpp src/network.h src/network.cpp)
   target_link_libraries(testNetSim ${GTEST_BOTH_LIBRARIES} pthread)
   add_test(Network_simulation testNetSim)
 endif(test)
